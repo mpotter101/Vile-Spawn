@@ -120,7 +120,23 @@ export default class AnimationForm extends Html {
 
     HandleMaxFrameCountChange (data) {
         var val = data.value;
+        var oldVal = this.frameSelector.slider.getMaxValue ();
+
+        if (val < oldVal) {
+            for (var i = 0; i < this.state.images.length; i++) {
+
+                if (i > val && this.state.images [i]) {
+                    this.state.images [i].remove ();
+                    this.canvasManager.state.frames [i] = null;
+                }
+            }
+
+            this.state.images.splice (val, Math.infinity);
+            this.canvasManager.state.frames.splice (val, Math.infinity);
+        }
+
         this.frameSelector.slider.setMaxValue (val);
+        this.HandleCurrentFrameChange ({ value: val });
 
         if (this.frameSelector.getValue () > val) {
             this.frameSelector.setValue (val);
@@ -139,7 +155,10 @@ export default class AnimationForm extends Html {
 
         if (this.CurrentFrameExists ()) {
             var frameData = this.canvasManager.state.frames [data.value];
-            this.frameDurationInput.setValue ( frameData.duration );
+
+            if (frameData) {
+                this.frameDurationInput.setValue ( frameData.duration );
+            }
         }
 
         this.frameDurationInput.label.setContent ('Frame ' + data.value + ' ' + this.const.FRAME_DURATION_LABEL);
