@@ -1,0 +1,463 @@
+// Color declaration
+// General colors
+@bg-color: #1b1a20;
+@bg-color-2: #010101;
+@bg-color-input: #312e35;
+@bg-color-hover: #737373;
+@text-color: #bebbc1;
+@text-color-2: #668ea1;
+@border-color: #939393;
+// Component colors
+@cbg-color: #1b1a20;
+
+
+
+
+
+// General Styling
+body {
+    background-color: @bg-color;
+}
+
+::selection {
+    background: @text-color;
+}
+
+::-moz-selection {
+    background: @text-color;
+}
+
+::-webkit-selection {
+    background: @text-color;
+}
+
+.ui {
+    background-color: @cbg-color;
+    color: @text-color;
+}
+
+.ui.header {
+    color: @text-color;
+}
+
+
+
+
+
+// Functional Styles
+.hide {
+    display: none !important;
+    color: transparent !important;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.invalid {
+    border: 1px solid red !important;
+}
+
+
+
+
+
+// Page Styling
+
+// Removes weird spacing from content
+.segment.body {
+    padding: 0;
+}
+.ui.basic {
+    margin-top: 0;
+}
+
+// Page Content
+.ui.page {
+    background-color: black;
+    height: 80vh;
+}
+
+// Sidebars
+.ui.sidebar {
+    border: solid 1px @border-color;
+    height: auto;
+
+    &.right, &.left {
+
+        .head {
+            padding: 7px;
+        }
+
+        .ui.icon.button {
+            margin-top: -15px;
+            margin-bottom: 0px;
+            margin-right: 0px;
+            padding: 12px;
+        }
+    }
+
+    &.left {
+        border-left: none;
+
+        .head {
+            padding-right: 0;
+            padding-bottom: 0;
+            margin-bottom: 0;
+            text-align: right;
+        }
+    }
+
+    &.right {
+        border-right: none;
+
+        .head {
+            padding-left: 0;
+            padding-bottom: 0;
+        }
+    }
+
+    .ui.segment.head {
+        background-color: @bg-color-2;
+        color: @text-color;
+
+        // Remove border from sidebar buttons
+        .ui.icon.button {
+            border: none;
+        }
+    }
+}
+
+
+
+
+
+// Component Styles
+
+// Button
+.ui.button {
+    background-color: @bg-color-2;
+    border: solid 1px @border-color;
+    border-radius: 0;
+    color: @text-color;
+    padding: 11px;
+    margin-top: 7px;
+
+    &.floated {
+        background-color: @bg-color-2;
+        border: solid 1px @border-color;
+        position: absolute;
+        margin-top: 0;
+        top: 0em;
+
+        &.left {
+            border-left: none;
+            left: 0;
+        }
+
+        &.right {
+            border-right: none;
+            right: 0;
+        }
+
+        &.circular {
+            border: solid 1px @border-color;
+            border-radius: 100%;
+            padding: 5px;
+            right: 1vw;
+        }
+
+        &.active {
+            border: none;
+            border-top: solid 1px @border-color;
+        }
+
+        &:hover {
+            background-color: @bg-color-hover;
+        }
+    }
+
+    &.compact.labeled.icon {
+        background-color: @cbg-color;
+        // font-size: 12px;
+        margin-top: -3px !important;
+        padding: 0px 5px 0px 30px !important;
+        // font-size: left;
+        width: 60px;
+
+        i {
+            color: @border-color;
+        }
+
+        &:hover {
+            color: @text-color-2;
+
+            i {
+                color: @text-color-2;
+            }
+        }
+
+        &.active {
+            color: @text-color-2;
+
+            i {
+                color: @text-color-2;
+            }
+        }
+    }
+}
+
+// Icon Button
+.ui.icon.button {
+    background-color: @bg-color-2;
+    border: 1px solid @border-color;
+    border-radius: 0;
+    color: @text-color;
+
+    > i {
+        color: @text-color;
+    }
+
+    &:hover {
+        background-color: @bg-color-hover;
+    }
+}
+
+// Label
+.ui.label {
+    background-color: @bg-color;
+    color: @border-color;
+
+    > div {
+        display: inline-block;
+    }
+
+    > .property-label {
+        float: right;
+        text-align: center;
+        width: 110px;
+    }
+}
+
+// Input
+.ui.input {
+    background-color: @bg-color-input;
+    border: 0.3px solid @text-color;
+    color: @text-color;
+    padding: 0.6em;
+}
+
+// input slider
+.ui.input-slider {
+    display: inline-block;
+    margin-bottom: 3px;
+
+    .header {
+        margin-bottom: -5px;
+    }
+
+    input.ui.input {
+        width: 100px;
+    }
+
+    input[type="range"] {
+        margin-right: 20px;
+    }
+}
+
+.ui.labeled-input {
+    display: inline-block;
+
+    .ui.header {
+        margin: 0;
+    }
+
+    .ui.label {
+        margin: 0;
+        padding-left: 0;
+    }
+
+    input.ui.input {
+        min-width: 100px;
+    }
+}
+
+// Group
+.ui.group {
+    background-color: @cbg-color;
+    border: solid 1px @border-color;
+    // border-right: none;
+    border-radius: 0;
+    margin-top: 8px;
+    padding: 0;
+
+    > .label {
+        height: 20px;
+        margin: 0 -2px;
+        margin-bottom: 10px;
+        padding-top: 3px;
+        text-align: center;
+
+        > div {
+            margin-top: -16px;
+            border: none;
+        }
+    }
+
+    .content {
+        margin: 0;
+        padding: 0.3em 1em 1em 1em;
+    }
+}
+
+// Tabber
+.ui.tabular.menu {
+    margin-top: -25px;
+    margin-bottom: 7px;
+    text-align: center;
+
+    .item, .item.active, .ui.tab, .ui.tab.active {
+        border-radius: 0 !important;
+        height: 25px;
+        color: @text-color;
+        margin-top: 15px;
+
+        &.active {
+            background-color: @bg-color-hover;
+        }
+
+        &.disabled {
+            color: #8f8d90 !important;
+            pointer-events: none;
+        }
+    }
+
+    .item:hover {
+        background-color: @bg-color-hover;
+        border-radius: 0;
+        color: @text-color;
+    }
+}
+.tabber {
+    .ui.segment.group {
+        // max-height: 300px;
+        padding-bottom: 12px;
+    }
+}
+.ui.basic.tabs {
+    height: 0;
+    overflowx: hidden;
+    margin: 0;
+    padding: 0;
+    z-index: 999999;
+}
+
+// Styling sliders
+input[type=range].disabled {
+    pointer-events: none;
+    background: @border-color !important;
+}
+
+input[type=range] {
+  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+  width: 165px; /* Specific width is required for Firefox. */
+  background: transparent; /* Otherwise white in Chrome */
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+
+input[type=range]:focus {
+  outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+
+input[type=range]::-ms-track {
+  width: 100%;
+  cursor: pointer;
+
+  /* Hides the slider so custom styles can be added */
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+/* Special styling for WebKit/Blink */
+input[type=range]::-webkit-slider-thumb {
+    border-radius: 100%;
+    -webkit-appearance: none;
+    background: @text-color-2;
+    height: 10px;
+    width: 10px;
+    margin-top: -4px;
+}
+
+/* All the same stuff for Firefox */
+input[type=range]::-moz-range-thumb {
+    border-radius: 100%;
+    background: @text-color-2;
+    height: 10px;
+    width: 10px;
+}
+
+/* All the same stuff for IE */
+input[type=range]::-ms-thumb {
+    border-radius: 100%;
+    background: @text-color-2;
+    height: 10px;
+    width: 10px;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    background: @bg-color-hover;
+    height: 1px;
+    // width: 100%;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: @bg-color-hover;
+    height: 1px;
+    // width: 100%;
+}
+
+input[type=range]::-moz-range-track {
+    background: @bg-color-hover;
+    height: 1px;
+    // width: 100%;
+}
+
+input[type=range]::-ms-track {
+    background: @bg-color-hover;
+    height: 1px;
+    // width: 100%;
+}
+
+
+
+
+
+// SVG Styling
+svg {
+    background-color: black !important;
+    border: 1px solid @border-color;
+}
+
+* {
+    font-size: 1.05em;
+}
+
+text {
+    fill: @text-color !important;
+
+    &.y-axis {
+        text-anchor: end;
+    }
+
+    &.x-axis {
+        text-anchor: middle;
+    }
+
+    &.y-axis, &.x-axis {
+        font-size: 0.8em;
+    }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "Keeperscape-Character-Creator",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=10.15.0"
+  },
+  "description": "An art asset pipeline tool that unifies animated assets under a schema.",
+  "main": "app.js",
+  "dependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-module-resolver": "^2.7.1",
+    "babel-preset-env": "^1.7.0",
+    "less": "^3.9.0",
+    "live-server": "^1.2.1",
+    "query-string": "^4.2.3",
+    "webpack": "^3.8.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-watch": "^2.0.7",
+    "babelify": "^7.3.0",
+    "eslint": "^3.16.1",
+    "eslint-config-google": "^0.7.1"
+  },
+  "scripts": {
+    "start": "npx live-server --port=3000 --watch= --ignore=/node_modules/ --wait=500",
+    "start-debug": "babel-node app.js --inspect-brk --presets env",
+    "start-dev": "babel-watch app.js --presets env",
+    "nodemon": "nodemon app.js --exec babel-node --presets env",
+    "build": "webpack",
+    "dev": "webpack --watch",
+    "stats": "webpack --env production --profile --json > stats.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [],
+  "author": "Michael Potter",
+  "license": "Apache-2.0"
+}
