@@ -18,14 +18,9 @@ export default class CanvasManager extends Html {
         this.state.currentFrame = 0;
     }
 
-    SetImage ({ index, img }) {
-        console.log ('Canvas manager');
-        console.log (index, img);
+    SetImage ({ index, img, duration }) {
         this.state.currentFrame = index;
-        this.state.frames [index] = img;
-
-        console.log (this.state);
-
+        this.state.frames [index] = {img, duration};
         this.RedrawScene ();
     }
 
@@ -33,7 +28,16 @@ export default class CanvasManager extends Html {
         this.ctx.clearRect(0, 0, this.const.WIDTH, this.const.HEIGHT);
 
         if (this.state.frames [this.state.currentFrame]) {
-            this.ctx.drawImage (this.state.frames [this.state.currentFrame], 0, 0);
+            this.ctx.drawImage (this.state.frames [this.state.currentFrame].img, 0, 0);
         }
+    }
+
+    GetFrameDuration (index) {
+        var dur = 0;
+        var frame = this.state.frames [index];
+
+        if (frame) { dur = frame.duration; }
+        
+        return dur;
     }
 }

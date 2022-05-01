@@ -9,12 +9,15 @@ import Label from './component/Label';
 import LabeledInput from './component/LabeledInput';
 
 export default class AnimationForm extends Html {
-    constructor ({ parent, frameCount }) {
+    constructor ({ parent, frameCount, frameDuration }) {
         super ({ parent });
 
         this.state = {};
-        this.state.allFramesUploaded = false;
-        this.state.frames = [];
+        this.state.images = [];
+        this.state.playing = false;
+
+        this.const = {};
+        this.const.FRAME_DURATION_LABEL = 'Duration(ms)';
 
         this.groups = {
             canvas: new Group ({
@@ -26,6 +29,7 @@ export default class AnimationForm extends Html {
             }),
             form: new Group ({
                 parent: this.node,
+                class: 'ui segment group frame-form',
                 label: {
                     content: 'Frames Upload'
                 }
@@ -44,6 +48,14 @@ export default class AnimationForm extends Html {
         })
 
         this.groups.canvas.addContent (this.canvasManager.node);
+
+        this.maxFrameCountInput = new LabeledInput ({
+            parent: this.node,
+            onInput: (data) => { this.HandleMaxFrameCountChange (data); },
+            label: { content: 'Frame Count' }
+        })
+
+        this.maxFrameCountInput.setValue (frameCount);
 
         this.frameSelector = new InputSlider ({
             parent: this.node,
@@ -75,43 +87,124 @@ export default class AnimationForm extends Html {
             onClick: (e) => { this.imageLoader.node.click (); }
         })
 
-        this.frameDurationInput = new LabeledInput ({
+        this.playPauseButton = new Button ({
             parent: this.node,
-            label: { content: 'Duration(ms)', class: 'ui label' }
+            label: 'Play',
+            onClick: (e) => { this.HandlePlayPause (e); }
         })
 
-        this.frameDurationInput.setValue (100);
+        this.frameDurationInput = new LabeledInput ({
+            parent: this.node,
+            label: { content: 'Frame 1 Duration(ms)', class: 'ui label' },
+            onInput: (data) => { this.HandleFrameDurationChange (data); }
+        })
 
+        this.frameDurationInput.setValue (frameDuration);
+
+        this.groups.form.addContent (this.maxFrameCountInput.node);
         this.groups.form.addContent (this.frameSelector.node);
         this.groups.form.addContent (this.frameDurationInput.node);
         this.groups.form.addContent (this.uploadFrameButton.node);
+        this.groups.form.addContent (this.playPauseButton.node);
     }
 
     HandleImage (data) {
         var frameIndex = this.GetCurrentFrame ();
         this.SetImageInFramesGroup ({index: frameIndex,  src: data.value.src});
-        this.canvasManager.SetImage ({index: frameIndex, img: data.value});
+        this.canvasManager.SetImage ({
+            index: frameIndex,
+            img: data.value,
+            duration: this.frameDurationInput.getValue ()
+        });
+    }
+
+    HandleMaxFrameCountChange (data) {
+        var val = data.value;
+        this.frameSelector.slider.setMaxValue (val);
+
+        if (this.frameSelector.getValue () > val) {
+            this.frameSelector.setValue (val);
+        }
+    }
+
+    HandleFrameDurationChange (data) {
+        if (this.CurrentFrameExists ()) {
+            var curFrame = this.GetCurrentFrame ();
+            this.canvasManager.state.frames [curFrame].duration = data.value;
+        }
     }
 
     HandleCurrentFrameChange (data) {
         this.canvasManager.state.currentFrame = data.value;
+
+        if (this.CurrentFrameExists ()) {
+            var frameData = this.canvasManager.state.frames [data.value];
+            this.frameDurationInput.setValue ( frameData.duration );
+        }
+
+        this.frameDurationInput.label.setContent ('Frame ' + data.value + ' ' + this.const.FRAME_DURATION_LABEL);
+
         this.canvasManager.RedrawScene ();
     }
 
-    SetImageInFramesGroup ({index, src}) {
-        var frameExists = this.state.images [this.GetCurrentFrame ()] == undefined ? false : true;
+    HandlePlayPause() {
+        this.state.playing = !this.state.playing;
 
+        if (this.state.playing) {
+            this.playPauseButton.node.html ('Pause');
+            this.PlayFrame (this.canvasManager.GetFrameDuration (this.frameSelector.getValue ()))
+        }
+        else {
+            this.playPauseButton.node.html ('Play');
+        }
+    }
+
+    SetImageInFramesGroup ({index, src}) {
+        var frameExists = this.CurrentFrameExists();
         if (!frameExists) {
-            var newImg = $('<img src="' + src + '" />');
+            var newImg = $('<img />');
             this.state.images [index] = newImg
             this.groups.frames.addContent (newImg)
         }
-        else {
-            this.state.images [index] [0].src = src
-        }
+
+        this.state.images [index] [0].src = src;
+
+        // Redraw the images so they appear in order
+        this.state.images.forEach ((img) => {
+            this.groups.frames.addContent (img);
+        })
     }
 
     GetCurrentFrame () {
         return this.frameSelector.getValue ();
+    }
+
+    GetMaxFrameCount () {
+        return this.maxFrameCountInput.getValue ();
+    }
+
+    CurrentFrameExists () {
+        var curFrame = this.GetCurrentFrame ();
+        var curFrameData = this.canvasManager.state.frames [curFrame];
+
+        if (!curFrameData) { return false; }
+
+        return true;
+    }
+
+    PlayFrame (duration) {
+        if (this.state.playing) {
+            var nextFrame = this.GetCurrentFrame () + 1;
+            if (nextFrame > this.GetMaxFrameCount ()) {
+                nextFrame = 1;
+            }
+
+            this.frameSelector.setValue (nextFrame);
+            this.HandleCurrentFrameChange ({ value: nextFrame });
+
+            window.setTimeout (() => {
+                this.PlayFrame (this.canvasManager.GetFrameDuration (nextFrame));
+            }, duration)
+        }
     }
 }

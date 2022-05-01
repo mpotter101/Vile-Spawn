@@ -45,4 +45,14 @@ export default class Slider extends Html {
         value = value.toString ()
         this.node.prop ( { value } )
     }
+
+    setMaxValue (value) {
+        value = value.toString ()
+        this.node.prop ( { max: value } )
+    }
+
+    setMinValue (value) {
+        value = value.toString ()
+        this.node.prop ( { min: value } )
+    }
 }

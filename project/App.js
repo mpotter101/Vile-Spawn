@@ -4,11 +4,13 @@ import Group from './component/Group';
 
 // App Components
 import AnimationForm from './AnimationForm';
+import AboutForm from './AboutForm';
 
 export default class App {
     constructor ({ stageQuerySelector }) {
         this.groups = {
             about: new Group ({
+                class: 'ui segment group about-form',
                 parent: $(stageQuerySelector),
                 label: {
                     content: 'About'
@@ -21,6 +23,12 @@ export default class App {
                 }
             }),
         }
+
+        this.aboutForm = new AboutForm ({
+            parent: $(document.body)
+        })
+
+        this.groups.about.addContent (this.aboutForm.node);
 
         this.animationNames = [ 'Idle', 'Walk', 'Walk-Back' ];
 
@@ -37,7 +45,8 @@ export default class App {
             this.animationForms [name] = new AnimationForm (
                 {
                     parent: $(document.body),
-                    frameCount: 5
+                    frameCount: 5,
+                    frameDuration: 100
                 }
             );
             this.tabber.addContent (
