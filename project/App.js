@@ -7,13 +7,13 @@ import AnimationForm from './AnimationForm';
 import AboutForm from './AboutForm';
 
 export default class App {
-    constructor ({ stageQuerySelector }) {
+    constructor ({ stageQuerySelector, animations, canvasHeight, canvasWidth, keywords }) {
         this.groups = {
             about: new Group ({
                 class: 'ui segment group about-form',
                 parent: $(stageQuerySelector),
                 label: {
-                    content: 'About'
+                    content: 'About Your Character'
                 }
             }),
             animation: new Group ({
@@ -25,12 +25,13 @@ export default class App {
         }
 
         this.aboutForm = new AboutForm ({
-            parent: $(document.body)
+            parent: $(document.body),
+            keywords: keywords
         })
 
         this.groups.about.addContent (this.aboutForm.node);
 
-        this.animationNames = [ 'Idle', 'Walk', 'Walk-Back' ];
+        this.animationNames = animations;
 
         this.tabber = new Tabber ({
             parent: $(document.body),
@@ -46,7 +47,8 @@ export default class App {
                 {
                     parent: $(document.body),
                     frameCount: 5,
-                    frameDuration: 100
+                    frameDuration: 100,
+                    canvasHeight, canvasWidth
                 }
             );
             this.tabber.addContent (
@@ -54,5 +56,17 @@ export default class App {
                 this.animationForms [name].node
             );
         });
+    }
+
+    CollectStateData () {
+        var data = {};
+        data.about = this.aboutForm.GetState ();
+        data.animation = {};
+        
+        this.animationNames.forEach ((name) => {
+            data.animation [name] = this.animationForms [name].GetState ();
+        })
+
+        return data;
     }
 }

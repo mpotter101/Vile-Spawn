@@ -9,7 +9,7 @@ import Label from './component/Label';
 import LabeledInput from './component/LabeledInput';
 
 export default class AnimationForm extends Html {
-    constructor ({ parent, frameCount, frameDuration }) {
+    constructor ({ parent, frameCount, frameDuration, canvasHeight, canvasWidth }) {
         super ({ parent });
 
         this.state = {};
@@ -36,6 +36,7 @@ export default class AnimationForm extends Html {
             }),
             frames: new Group ({
                 parent: this.node,
+                class: 'ui segment group frames',
                 label: {
                     content: 'Frames'
                 }
@@ -44,7 +45,7 @@ export default class AnimationForm extends Html {
 
         this.canvasManager = new CanvasManager ({
             parent: this.node,
-            height: 256, width: 256
+            height: canvasHeight, width: canvasWidth
         })
 
         this.groups.canvas.addContent (this.canvasManager.node);
@@ -225,5 +226,9 @@ export default class AnimationForm extends Html {
                 this.PlayFrame (this.canvasManager.GetFrameDuration (nextFrame));
             }, duration)
         }
+    }
+
+    GetState () {
+        return { images: this.state.images }
     }
 }

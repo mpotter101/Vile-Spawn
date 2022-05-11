@@ -1,16 +1,13 @@
 
 canvas {
     background-color: black;
-    height: 40vh;
+    height: 40vw;
+    width: 40vw;
     display: block;
-    // position: absolute;
-    // top: 0;
     margin: 0px auto;
 }
 
 #stage {
-    // text-align: center;
-    // height: 50vh;
     position: relative;
 }
 
@@ -48,5 +45,22 @@ canvas {
 
     .input {
         padding: 0.1em 0.3em;
+    }
+}
+
+.ui.tabular.menu {
+    flex-wrap: wrap;
+}
+
+.ui.segment.group.frames {
+    min-height: 256px;
+}
+
+.about-form > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) {
+    width: 50vw;
+
+    input {
+        text-align: center;
+        width: 100%;
     }
 }
