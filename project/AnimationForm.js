@@ -9,7 +9,7 @@ import Label from './component/Label';
 import LabeledInput from './component/LabeledInput';
 
 export default class AnimationForm extends Html {
-    constructor ({ parent, frameCount, frameDuration, canvasHeight, canvasWidth }) {
+    constructor ({ parent, frameCount, frameDuration, canvasHeight, canvasWidth, scrollDir }) {
         super ({ parent });
 
         this.state = {};
@@ -18,6 +18,7 @@ export default class AnimationForm extends Html {
 
         this.const = {};
         this.const.FRAME_DURATION_LABEL = 'Duration(ms)';
+        this.const.IMG_SIZE = 256;
 
         this.groups = {
             canvas: new Group ({
@@ -45,7 +46,9 @@ export default class AnimationForm extends Html {
 
         this.canvasManager = new CanvasManager ({
             parent: this.node,
-            height: canvasHeight, width: canvasWidth
+            height: canvasHeight, width: canvasWidth,
+            imgSize: this.const.IMG_SIZE,
+            scrollDir: scrollDir
         })
 
         this.groups.canvas.addContent (this.canvasManager.node);
@@ -80,11 +83,14 @@ export default class AnimationForm extends Html {
         this.imageLoader = new ImageInput ({
             parent: this.node,
             onImage: (data) => { this.HandleImage (data); },
+            onMultiImageUpload: (data) => { this.HandleMultipleImages (data); }
         });
+
+        this.imageLoader.node.prop ('multiple', 'multiple');
 
         this.uploadFrameButton = new Button ({
             parent: this.node,
-            label: 'Upload Frame',
+            label: 'Upload Frames',
             onClick: (e) => { this.imageLoader.node.click (); }
         })
 
@@ -179,10 +185,32 @@ export default class AnimationForm extends Html {
         }
     }
 
+    HandleMultipleImages ({target, event, node, value}) {
+        // if we are on frame 1, adjust the max number of frames to the number of images
+        var curFrame = this.GetCurrentFrame ();
+        var maxFrames = curFrame + value.length - 1;
+        this.maxFrameCountInput.setValue (maxFrames);
+        this.HandleMaxFrameCountChange ({ value: maxFrames })
+
+        value.forEach ((img) => {
+            this.HandleImage ({ value: img });
+
+            if (curFrame <= maxFrames) {
+                curFrame++;
+                this.frameSelector.setValue (curFrame);
+            }
+        })
+
+        this.frameSelector.setValue (curFrame - 1);
+        this.HandleCurrentFrameChange ({ value: curFrame - 1 });
+    }
+
     SetImageInFramesGroup ({index, src}) {
         var frameExists = this.CurrentFrameExists();
         if (!frameExists) {
             var newImg = $('<img />');
+            newImg.height (this.const.IMG_SIZE);
+            newImg.width (this.const.IMG_SIZE);
             this.state.images [index] = newImg
             this.groups.frames.addContent (newImg)
         }

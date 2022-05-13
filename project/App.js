@@ -31,7 +31,12 @@ export default class App {
 
         this.groups.about.addContent (this.aboutForm.node);
 
-        this.animationNames = animations;
+        this.animations = animations;
+        this.animationNames = [];
+
+        for (var key in this.animations) {
+            this.animationNames.push (key);
+        }
 
         this.tabber = new Tabber ({
             parent: $(document.body),
@@ -42,27 +47,29 @@ export default class App {
 
         this.animationForms = {}
 
-        this.animationNames.forEach ((name, index) => {
-            this.animationForms [name] = new AnimationForm (
+        for (var key in this.animations) {
+            var item = this.animations [key];
+            this.animationForms [key] = new AnimationForm (
                 {
                     parent: $(document.body),
                     frameCount: 5,
                     frameDuration: 100,
-                    canvasHeight, canvasWidth
+                    canvasHeight, canvasWidth,
+                    scrollDir: item.scrollDir,
                 }
             );
             this.tabber.addContent (
-                this.tabber.getTabIndexByName (name),
-                this.animationForms [name].node
+                this.tabber.getTabIndexByName (key),
+                this.animationForms [key].node
             );
-        });
+        }
     }
 
     CollectStateData () {
         var data = {};
         data.about = this.aboutForm.GetState ();
         data.animation = {};
-        
+
         this.animationNames.forEach ((name) => {
             data.animation [name] = this.animationForms [name].GetState ();
         })

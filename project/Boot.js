@@ -6,15 +6,22 @@ import App from './App'
 // Pass in schema for app here
 window.VileSpawn = new App ({
     stageQuerySelector: "#stage",
-    canvasHeight: 256,
-    canvasWidth: 256,
+    canvasHeight: 512,
+    canvasWidth: 512,
     keywords: ['beast', 'humanoid', 'fur', 'claws', 'quadroped', 'wings', 'undead', 'construct', 'aquatic', 'scales'],
-    animations: [
-        'idle-right', '(idle-right-back)', 'idle-left', '(idle-left-back)',
-        'walk-right', '(walk-right-back)', 'walf-left', '(walk-left-back)',
-        'sleep-startup', 'sleep-loop', 'sleep',
-        'eat', 'working-on-something-loop',
-        '(fishing-startup)', '(fishing-idle-loop)', '(fishing-catch)', '(fishing-end)',
-        'fight-idle', 'fight-attack', 'fight-hurt', 'knockout',
-    ]
-})
+    animations: {
+        'idle-right': { },
+        '(idle-right-back)': { },
+        'idle-left': { },
+        '(idle-left-back)': { },
+        'walk-right': { scrollDir: 'right' },
+        '(walk-right-back)': {scrollDir: 'down right'},
+        'walf-left': { scrollDir: 'left' },
+        '(walk-left-back)': { scrollDir: 'down left' },
+        'basic-attack': {},
+        'cast-ability': {},
+        'hurt': {},
+        '(knockedout-start)': {},
+        'knockedout-loop': {},
+    }
+});
