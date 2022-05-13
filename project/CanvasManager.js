@@ -22,7 +22,7 @@ export default class CanvasManager extends Html {
         this.state.frames = [];
         this.state.currentFrame = 0;
 
-        this.bgImg = $('<img src="./Assets/Tiling Grass.png" />');
+        this.bgImg = $('<img src="./assets/Tiling Grass.png" />');
         this.bgImg.on ('load', () => { this.ready = true; this.RedrawLoop() });
         this.bgImgPos = { x: 0, y: 0 }
         this.bgImgSpeed = 4;
