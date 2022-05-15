@@ -9,19 +9,25 @@ window.VileSpawn = new App ({
     canvasHeight: 512,
     canvasWidth: 512,
     keywords: ['beast', 'humanoid', 'fur', 'claws', 'quadroped', 'wings', 'undead', 'construct', 'aquatic', 'scales'],
-    animations: {
-        'idle-right': { },
-        '(idle-right-back)': { },
-        'idle-left': { },
-        '(idle-left-back)': { },
-        'walk-right': { scrollDir: 'right' },
-        '(walk-right-back)': {scrollDir: 'down right'},
-        'walf-left': { scrollDir: 'left' },
-        '(walk-left-back)': { scrollDir: 'down left' },
-        'basic-attack': {},
-        'cast-ability': {},
-        'hurt': {},
-        '(knockedout-start)': {},
-        'knockedout-loop': {},
+    animationCategories: {
+        'Idle': {
+            'idle-right': { },
+            'idle-left': { },
+            '(idle-right-back)': { optional: true },
+            '(idle-left-back)': { optional: true },
+        },
+        'Movement': {
+            'walk-right': { scrollDir: 'right' },
+            'walf-left': { scrollDir: 'left' },
+            '(walk-right-back)': {scrollDir: 'down right', optional: true},
+            '(walk-left-back)': { scrollDir: 'down left', optional: true },
+        },
+        'Combat': {
+            'basic-attack': {},
+            'cast-ability': {},
+            'hurt': {},
+            '(knockedout-start)': { optional: true },
+            'knockedout-loop': {},
+        }
     }
 });

@@ -7,7 +7,12 @@ import AnimationForm from './AnimationForm';
 import AboutForm from './AboutForm';
 
 export default class App {
-    constructor ({ stageQuerySelector, animations, canvasHeight, canvasWidth, keywords }) {
+    constructor ({ stageQuerySelector, animationCategories, canvasHeight, canvasWidth, keywords }) {
+
+        this.const = {};
+        this.const.CANVAS_HEIGHT = canvasHeight;
+        this.const.CANVAS_WIDTH = canvasWidth;
+
         this.groups = {
             about: new Group ({
                 class: 'ui segment group about-form',
@@ -31,37 +36,76 @@ export default class App {
 
         this.groups.about.addContent (this.aboutForm.node);
 
-        this.animations = animations;
-        this.animationNames = [];
+        this.animationCategoriesNames = Object.keys (animationCategories);
 
-        for (var key in this.animations) {
-            this.animationNames.push (key);
-        }
+        this.animations = {};
+        this.animationForms = {};
 
-        this.tabber = new Tabber ({
+        this.animationCategoryTabber = new Tabber ({
             parent: $(document.body),
-            tabs: this.animationNames
+            tabs: this.animationCategoriesNames
         });
 
-        this.groups.animation.addContent (this.tabber.node);
+        var item, targetTabIndex;
+        for (var key in animationCategories) {
+            item = animationCategories [key];
 
-        this.animationForms = {}
+            this.CreateAnimationsTabberForCategory ({
+                categoryName: key,
+                category: item
+            });
+        }
 
-        for (var key in this.animations) {
-            var item = this.animations [key];
-            this.animationForms [key] = new AnimationForm (
+        this.groups.animation.addContent (this.animationCategoryTabber.node);
+    }
+
+    CreateAnimationsTabberForCategory ({ category, categoryName }) {
+        var targetTabIndex = this.animationCategoryTabber.getTabIndexByName (categoryName);
+
+        this.animations [categoryName + 'Tabber'] = new Tabber ({
+            parent: $(document.body),
+            tabs: Object.keys (category)
+        })
+
+        this.animationCategoryTabber.addContent (
+            targetTabIndex,
+            this.animations [categoryName + 'Tabber'].node
+        )
+
+        this.CreateAnimationFormsForCategory ({
+            category,
+            categoryName,
+            parentTabber: this.animations [categoryName + 'Tabber']
+        });
+    }
+
+    CreateAnimationFormsForCategory ({ category, categoryName, parentTabber }) {
+        var item;
+        for (var key in category) {
+            item = category [key];
+
+            var formName = categoryName + '-' + key;
+            this.animationForms [formName] = new AnimationForm (
                 {
                     parent: $(document.body),
                     frameCount: 5,
                     frameDuration: 100,
-                    canvasHeight, canvasWidth,
+                    canvasHeight: this.const.CANVAS_HEIGHT,
+                    canvasWidth: this.const.CANVAS_WIDTH,
                     scrollDir: item.scrollDir,
                 }
             );
-            this.tabber.addContent (
-                this.tabber.getTabIndexByName (key),
-                this.animationForms [key].node
+
+            var targetTabIndex = parentTabber.getTabIndexByName (key);
+
+            parentTabber.addContent (
+                targetTabIndex,
+                this.animationForms [formName].node
             );
+
+            if (item.optional) {
+                parentTabber.tabs [targetTabIndex].node.addClass ('optional');
+            }
         }
     }
 
@@ -70,7 +114,7 @@ export default class App {
         data.about = this.aboutForm.GetState ();
         data.animation = {};
 
-        this.animationNames.forEach ((name) => {
+        Object.keys (this.animationForms).forEach ((name) => {
             data.animation [name] = this.animationForms [name].GetState ();
         })
 

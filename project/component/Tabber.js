@@ -63,7 +63,8 @@ export default class Tabber extends Html {
                 name: item,
                 button: tabButton,
                 content: tabContent,
-                index: index
+                index: index,
+                node: tabButton.node
             });
         })
 
