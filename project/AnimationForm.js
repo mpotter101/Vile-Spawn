@@ -223,7 +223,7 @@ export default class AnimationForm extends Html {
         this.state.images [index].src = src;
         this.state.images [index].node [0].src = src;
 
-        // Redraw the images so they appear in order
+        // Re-add img elements so they appear in order
         this.state.images.forEach ((img) => {
             this.groups.frames.addContent (img.node);
         })

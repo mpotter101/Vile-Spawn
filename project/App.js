@@ -2,6 +2,7 @@
 import Tabber from './component/Tabber';
 import Group from './component/Group';
 import Button from './component/Button';
+import TextFileInput from './component/TextFileInput';
 
 // App Components
 import AnimationForm from './AnimationForm';
@@ -35,10 +36,21 @@ export default class App {
             }),
         }
 
+        this.dataImporter = new TextFileInput ({
+            parent: $(document.body),
+            onFile: (data) => { this.HandleDataImport (data); }
+        })
+
         this.exportButton = new Button ({
             parent: this.groups.data.node,
             label: 'Export Data',
-            onClick: (e) => { this.ExportData(); }
+            onClick: (e) => { this.ExportData (); }
+        })
+
+        this.importButton = new Button ({
+            parent: this.groups.data.node,
+            label: 'Import Data',
+            onClick: (e) => { this.dataImporter.node.click (); }
         })
 
         this.aboutForm = new AboutForm ({
@@ -133,8 +145,14 @@ export default class App {
         return data;
     }
 
-    ImportData () {
+    HandleDataImport (data) {
+        console.log ("received file!");
+        console.log (data.value);
+        var json = JSON.parse (data.value);
 
+        var img = $('<img />');
+        img [0].src = json.animation ['Idle-face-right'].images [1].src;
+        $(document.body).append (img)
     }
 
     ExportData () {
