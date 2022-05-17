@@ -11,6 +11,7 @@
     "babel-loader": "^7.1.2",
     "babel-plugin-module-resolver": "^2.7.1",
     "babel-preset-env": "^1.7.0",
+    "jszip": "^3.9.1",
     "less": "^3.9.0",
     "live-server": "^1.2.1",
     "query-string": "^4.2.3",

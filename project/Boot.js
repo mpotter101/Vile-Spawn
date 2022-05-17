@@ -11,16 +11,16 @@ window.VileSpawn = new App ({
     keywords: ['beast', 'humanoid', 'fur', 'claws', 'quadroped', 'wings', 'undead', 'construct', 'aquatic', 'scales'],
     animationCategories: {
         'Idle': {
-            'idle-right': { },
-            'idle-left': { },
-            '(idle-right-back)': { optional: true },
-            '(idle-left-back)': { optional: true },
+            'face-right': { },
+            'face-left': { },
+            'face-right-away': { optional: true },
+            'face-left-away': { optional: true },
         },
         'Movement': {
-            'walk-right': { scrollDir: 'right' },
-            'walf-left': { scrollDir: 'left' },
-            '(walk-right-back)': {scrollDir: 'down right', optional: true},
-            '(walk-left-back)': { scrollDir: 'down left', optional: true },
+            'face-right': { scrollDir: 'right' },
+            'face-left': { scrollDir: 'left' },
+            'face-right-away': {scrollDir: 'down right', optional: true},
+            'face-left-away': { scrollDir: 'down left', optional: true },
         },
         'Combat': {
             'basic-attack': {},

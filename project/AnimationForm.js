@@ -130,16 +130,8 @@ export default class AnimationForm extends Html {
         var oldVal = this.frameSelector.slider.getMaxValue ();
 
         if (val < oldVal) {
-            for (var i = 0; i < this.state.images.length; i++) {
-
-                if (i > val && this.state.images [i]) {
-                    this.state.images [i].remove ();
-                    this.canvasManager.state.frames [i] = null;
-                }
-            }
-
-            this.state.images.splice (val, Math.infinity);
-            this.canvasManager.state.frames.splice (val, Math.infinity);
+            var length = this.state.images.length - val;
+            this.ClearFrames ({startIndex: val, endIndex: length});
         }
 
         this.frameSelector.slider.setMaxValue (val);
@@ -150,10 +142,17 @@ export default class AnimationForm extends Html {
         }
     }
 
+    ClearFrames ({ startIndex, endIndex })
+    {
+        this.state.images.splice (startIndex, endIndex);
+        this.canvasManager.state.frames.splice (startIndex, endIndex);
+    }
+
     HandleFrameDurationChange (data) {
         if (this.CurrentFrameExists ()) {
             var curFrame = this.GetCurrentFrame ();
             this.canvasManager.state.frames [curFrame].duration = data.value;
+            this.state.images.duration = data.value;
         }
     }
 
@@ -206,20 +205,27 @@ export default class AnimationForm extends Html {
     }
 
     SetImageInFramesGroup ({index, src}) {
+        var curFrame = this.GetCurrentFrame ();
+
         var frameExists = this.CurrentFrameExists();
         if (!frameExists) {
             var newImg = $('<img />');
             newImg.height (this.const.IMG_SIZE);
             newImg.width (this.const.IMG_SIZE);
-            this.state.images [index] = newImg
+            this.state.images [index] = {
+                node: newImg,
+                src,
+                duration: this.frameDurationInput.getValue ()
+            }
             this.groups.frames.addContent (newImg)
         }
 
-        this.state.images [index] [0].src = src;
+        this.state.images [index].src = src;
+        this.state.images [index].node [0].src = src;
 
         // Redraw the images so they appear in order
         this.state.images.forEach ((img) => {
-            this.groups.frames.addContent (img);
+            this.groups.frames.addContent (img.node);
         })
     }
 
@@ -258,5 +264,13 @@ export default class AnimationForm extends Html {
 
     GetState () {
         return { images: this.state.images }
+    }
+
+    ClearData () {
+        this.ClearFrames ({ startIndex: 0, endIndex: this.state.images.length});
+    }
+
+    ImportData ({ animations }) {
+
     }
 }

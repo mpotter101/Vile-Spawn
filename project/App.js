@@ -1,6 +1,7 @@
 // Base Components
 import Tabber from './component/Tabber';
 import Group from './component/Group';
+import Button from './component/Button';
 
 // App Components
 import AnimationForm from './AnimationForm';
@@ -8,12 +9,17 @@ import AboutForm from './AboutForm';
 
 export default class App {
     constructor ({ stageQuerySelector, animationCategories, canvasHeight, canvasWidth, keywords }) {
-
         this.const = {};
         this.const.CANVAS_HEIGHT = canvasHeight;
         this.const.CANVAS_WIDTH = canvasWidth;
 
         this.groups = {
+            data: new Group ({
+                parent: $(stageQuerySelector),
+                label: {
+                    content: 'Save/Load'
+                }
+            }),
             about: new Group ({
                 class: 'ui segment group about-form',
                 parent: $(stageQuerySelector),
@@ -28,6 +34,12 @@ export default class App {
                 }
             }),
         }
+
+        this.exportButton = new Button ({
+            parent: this.groups.data.node,
+            label: 'Export Data',
+            onClick: (e) => { this.ExportData(); }
+        })
 
         this.aboutForm = new AboutForm ({
             parent: $(document.body),
@@ -116,8 +128,28 @@ export default class App {
 
         Object.keys (this.animationForms).forEach ((name) => {
             data.animation [name] = this.animationForms [name].GetState ();
-        })
+        });
 
         return data;
+    }
+
+    ImportData () {
+
+    }
+
+    ExportData () {
+        var data = this.CollectStateData();
+        var name = data.about.name + "-game-data.json"
+        var jsonFileContent = JSON.stringify (data, null, 4);
+        this.Download (jsonFileContent, name, "text/plain");
+    }
+
+    // Borrowd from here: http://www.4codev.com/javascript/download-save-json-content-to-local-file-in-javascript-idpx473668115863369846.html
+    Download(content, fileName, contentType) {
+        const a = document.createElement("a");
+        const file = new Blob([content], { type: contentType });
+        a.href = URL.createObjectURL(file);
+        a.download = fileName;
+        a.click();
     }
 }
