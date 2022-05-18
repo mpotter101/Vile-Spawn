@@ -9,12 +9,16 @@ import Label from './component/Label';
 import LabeledInput from './component/LabeledInput';
 
 export default class AnimationForm extends Html {
-    constructor ({ parent, frameCount, frameDuration, canvasHeight, canvasWidth, scrollDir }) {
+    constructor ({ parent, frameCount, frameDuration, canvasHeight, canvasWidth, scrollDir, optional, name, categoryName }) {
         super ({ parent });
 
         this.state = {};
         this.state.images = [];
         this.state.playing = false;
+        this.state.optional = optional;
+        this.state.scrollDir = scrollDir
+        this.state.name = name;
+        this.state.categoryName = categoryName;
 
         this.const = {};
         this.const.FRAME_DURATION_LABEL = 'Duration(ms)';
@@ -152,7 +156,7 @@ export default class AnimationForm extends Html {
         if (this.CurrentFrameExists ()) {
             var curFrame = this.GetCurrentFrame ();
             this.canvasManager.state.frames [curFrame].duration = data.value;
-            this.state.images.duration = data.value;
+            this.state.images [this.GetCurrentFrame ()].duration = data.value;
         }
     }
 
@@ -263,14 +267,48 @@ export default class AnimationForm extends Html {
     }
 
     GetState () {
-        return { images: this.state.images }
+        return {
+                images: this.state.images,
+            }
     }
 
     ClearData () {
         this.ClearFrames ({ startIndex: 0, endIndex: this.state.images.length});
     }
 
-    ImportData ({ animations }) {
+    ImportData (data) {
+        this.frameSelector.setValue (0);
+        this.HandleCurrentFrameChange ({value: 0});
+        this.HandleMaxFrameCountChange ({value: 0});
+        this.maxFrameCountInput.setValue (data.images.length - 1);
+        this.HandleMaxFrameCountChange ({value: data.images.length - 1});
 
+        var index = 0;
+        data.images.forEach ((image) => {
+
+            if (image) {
+                this.frameSelector.setValue (index);
+                this.HandleCurrentFrameChange ({value: index});
+
+                this.frameDurationInput.setValue (image.duration);
+                this.HandleFrameDurationChange ({value: image.duration});
+
+                var img = $('<img />');
+                img [0].src = image.src;
+
+                this.HandleImage ({ value: img[0] });
+
+                this.state.images [index].duration = image.duration;
+                console.log (image.duration)
+            }
+
+            index++;
+        })
+
+        this.frameSelector.setValue (1);
+        this.HandleCurrentFrameChange ({value: 1});
+
+        console.log ('Uploaded images');
+        console.log (this.state.images)
     }
 }

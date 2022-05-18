@@ -64,4 +64,20 @@ export default class AboutForm extends Html {
 
         return this.state;
     }
+
+    ImportData (data) {
+        console.log ("About form received data");
+        console.log (data);
+
+        this.name.setValue (data.name);
+
+        var item;
+        Object.keys (data.keywords).forEach ((key) => {
+            item = data.keywords [key];
+
+            this.state.keywords [key] = item;
+            console.log ('Settin keword ' + key + ' to ' + item)
+            this.inputs [key].setChecked (item);
+        })
+    }
 }

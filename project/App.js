@@ -17,6 +17,7 @@ export default class App {
         this.groups = {
             data: new Group ({
                 parent: $(stageQuerySelector),
+                class: 'ui segment group data-area',
                 label: {
                     content: 'Save/Load'
                 }
@@ -42,16 +43,19 @@ export default class App {
         })
 
         this.exportButton = new Button ({
-            parent: this.groups.data.node,
+            parent: $(document.body),
             label: 'Export Data',
             onClick: (e) => { this.ExportData (); }
         })
 
         this.importButton = new Button ({
-            parent: this.groups.data.node,
+            parent: $(document.body),
             label: 'Import Data',
             onClick: (e) => { this.dataImporter.node.click (); }
         })
+
+        this.groups.data.addContent (this.exportButton.node);
+        this.groups.data.addContent (this.importButton.node);
 
         this.aboutForm = new AboutForm ({
             parent: $(document.body),
@@ -62,7 +66,7 @@ export default class App {
 
         this.animationCategoriesNames = Object.keys (animationCategories);
 
-        this.animations = {};
+        this.animationTabbers = {};
         this.animationForms = {};
 
         this.animationCategoryTabber = new Tabber ({
@@ -86,32 +90,36 @@ export default class App {
     CreateAnimationsTabberForCategory ({ category, categoryName }) {
         var targetTabIndex = this.animationCategoryTabber.getTabIndexByName (categoryName);
 
-        this.animations [categoryName + 'Tabber'] = new Tabber ({
+        this.animationTabbers [categoryName] = new Tabber ({
             parent: $(document.body),
             tabs: Object.keys (category)
         })
 
         this.animationCategoryTabber.addContent (
             targetTabIndex,
-            this.animations [categoryName + 'Tabber'].node
+            this.animationTabbers [categoryName].node
         )
 
         this.CreateAnimationFormsForCategory ({
             category,
             categoryName,
-            parentTabber: this.animations [categoryName + 'Tabber']
+            parentTabber: this.animationTabbers [categoryName]
         });
     }
 
     CreateAnimationFormsForCategory ({ category, categoryName, parentTabber }) {
+        this.animationForms [categoryName] = {};
+
         var item;
         for (var key in category) {
             item = category [key];
 
-            var formName = categoryName + '-' + key;
-            this.animationForms [formName] = new AnimationForm (
+            this.animationForms [categoryName] [key] = new AnimationForm (
                 {
                     parent: $(document.body),
+                    categoryName,
+                    name: key,
+                    optional: item.optional,
                     frameCount: 5,
                     frameDuration: 100,
                     canvasHeight: this.const.CANVAS_HEIGHT,
@@ -124,7 +132,7 @@ export default class App {
 
             parentTabber.addContent (
                 targetTabIndex,
-                this.animationForms [formName].node
+                this.animationForms [categoryName] [key].node
             );
 
             if (item.optional) {
@@ -136,10 +144,16 @@ export default class App {
     CollectStateData () {
         var data = {};
         data.about = this.aboutForm.GetState ();
-        data.animation = {};
+        data.animationCategories = {};
 
-        Object.keys (this.animationForms).forEach ((name) => {
-            data.animation [name] = this.animationForms [name].GetState ();
+        Object.keys (this.animationTabbers).forEach ((name) => {
+            data.animationCategories [name] = {};
+
+            Object.keys (this.animationForms [name]).forEach ((key) => {
+                console.log (name, key)
+                var item = this.animationForms [name] [key];
+                data.animationCategories [name] [item.state.name] = item.GetState ();
+            })
         });
 
         return data;
@@ -150,9 +164,15 @@ export default class App {
         console.log (data.value);
         var json = JSON.parse (data.value);
 
-        var img = $('<img />');
-        img [0].src = json.animation ['Idle-face-right'].images [1].src;
-        $(document.body).append (img)
+        // about form
+        this.aboutForm.ImportData (json.about);
+        Object.keys (json.animationCategories).forEach ((categoryName) => {
+            Object.keys (json.animationCategories [categoryName]).forEach ((animationName) => {
+                console.log (this.animationForms)
+                console.log (categoryName + ' ' + animationName)
+                this.animationForms [categoryName] [animationName].ImportData (json.animationCategories [categoryName] [animationName]);
+            })
+        })
     }
 
     ExportData () {

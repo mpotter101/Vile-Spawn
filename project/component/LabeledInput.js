@@ -62,6 +62,8 @@ export default class LabeledInput extends Html {
 
     getValue () { return this.input.getValue () }
 
+    setChecked (value) { this.input.node.prop ('checked', value) }
+
     getIsCheckedAsBoolean () {
         if (this.input.node [0].type == "checkbox") {
             return this.input.node [0].checked
