@@ -6,9 +6,13 @@ import App from './App'
 // Pass in schema for app here
 window.VileSpawn = new App ({
     stageQuerySelector: "#stage",
+    exportFileName: "entity-animation-data.json",
     canvasHeight: 512,
     canvasWidth: 512,
-    keywords: ['beast', 'humanoid', 'fur', 'claws', 'quadroped', 'wings', 'undead', 'construct', 'aquatic', 'scales'],
+    defaultFrameDuration: 200,
+    background: {
+        scrollSpeed: 3.3
+    },
     animationCategories: {
         'Idle': {
             'face-right': { },
@@ -17,8 +21,8 @@ window.VileSpawn = new App ({
             'face-left-away': { optional: true },
         },
         'Movement': {
-            'face-right': { scrollDir: 'right' },
-            'face-left': { scrollDir: 'left' },
+            'face-right': { scrollDir: 'right up' },
+            'face-left': { scrollDir: 'left up' },
             'face-right-away': {scrollDir: 'down right', optional: true},
             'face-left-away': { scrollDir: 'down left', optional: true },
         },

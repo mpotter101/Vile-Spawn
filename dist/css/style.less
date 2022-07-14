@@ -1,14 +1,16 @@
 // Color declaration
 // General colors
-@bg-color: #1b1a20;
-@bg-color-2: #010101;
-@bg-color-input: #312e35;
-@bg-color-hover: #737373;
-@text-color: #bebbc1;
-@text-color-2: #668ea1;
+@bg-color: #14151c;
+@text-color: #dad2d9;
+@text-color-subtle: #c6bfc5;
+@text-color-hover: #e0e0e0;
 @border-color: #939393;
+
 // Component colors
-@cbg-color: #1b1a20;
+@cbg-color: #242932;
+@bg-color-input: #1b1a20;
+@bg-color-button: #1b1a20;
+@bg-color-hover: #737373;
 
 
 
@@ -116,7 +118,7 @@ body {
     }
 
     .ui.segment.head {
-        background-color: @bg-color-2;
+        background-color: @cbg-color;
         color: @text-color;
 
         // Remove border from sidebar buttons
@@ -134,7 +136,7 @@ body {
 
 // Button
 .ui.button {
-    background-color: @bg-color-2;
+    background-color: @bg-color-button;
     border: solid 1px @border-color;
     border-radius: 0;
     color: @text-color;
@@ -142,7 +144,7 @@ body {
     margin-top: 7px;
 
     &.floated {
-        background-color: @bg-color-2;
+        background-color: @bg-color-button;
         border: solid 1px @border-color;
         position: absolute;
         margin-top: 0;
@@ -188,18 +190,18 @@ body {
         }
 
         &:hover {
-            color: @text-color-2;
+            color: @text-color-hover;
 
             i {
-                color: @text-color-2;
+                color: @text-color-hover;
             }
         }
 
         &.active {
-            color: @text-color-2;
+            color: @text-color-hover;
 
             i {
-                color: @text-color-2;
+                color: @text-color-hover;
             }
         }
     }
@@ -207,7 +209,7 @@ body {
 
 // Icon Button
 .ui.icon.button {
-    background-color: @bg-color-2;
+    background-color: @bg-color-button;
     border: 1px solid @border-color;
     border-radius: 0;
     color: @text-color;
@@ -223,8 +225,8 @@ body {
 
 // Label
 .ui.label {
-    background-color: @bg-color;
-    color: @border-color;
+    background-color: @cbg-color;
+    color: @text-color-subtle;
 
     > div {
         display: inline-block;
@@ -316,6 +318,7 @@ body {
 
     .item, .item.active, .ui.tab, .ui.tab.active {
         border-radius: 0 !important;
+        cursor: pointer;
         height: 25px;
         color: @text-color;
         margin-top: 15px;
@@ -384,7 +387,7 @@ input[type=range]::-ms-track {
 input[type=range]::-webkit-slider-thumb {
     border-radius: 100%;
     -webkit-appearance: none;
-    background: @text-color-2;
+    background: @text-color-hover;
     height: 10px;
     width: 10px;
     margin-top: -4px;
@@ -393,7 +396,7 @@ input[type=range]::-webkit-slider-thumb {
 /* All the same stuff for Firefox */
 input[type=range]::-moz-range-thumb {
     border-radius: 100%;
-    background: @text-color-2;
+    background: @text-color-hover;
     height: 10px;
     width: 10px;
 }
@@ -401,7 +404,7 @@ input[type=range]::-moz-range-thumb {
 /* All the same stuff for IE */
 input[type=range]::-ms-thumb {
     border-radius: 100%;
-    background: @text-color-2;
+    background: @text-color-hover;
     height: 10px;
     width: 10px;
 }

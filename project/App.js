@@ -9,30 +9,34 @@ import AnimationForm from './AnimationForm';
 import AboutForm from './AboutForm';
 
 export default class App {
-    constructor ({ stageQuerySelector, animationCategories, canvasHeight, canvasWidth, keywords }) {
+    constructor ({
+        stageQuerySelector,
+        headerQuerySelector,
+        animationCategories,
+        canvasHeight,
+        canvasWidth,
+        defaultFrameDuration,
+        background,
+        exportFileName
+    }) {
         this.const = {};
         this.const.CANVAS_HEIGHT = canvasHeight;
         this.const.CANVAS_WIDTH = canvasWidth;
+        this.const.DEFAULT_FRAME_DURATION = defaultFrameDuration;
+        this.const.EXPORT_FILE_NAME = exportFileName
 
         this.groups = {
-            data: new Group ({
-                parent: $(stageQuerySelector),
-                class: 'ui segment group data-area',
-                label: {
-                    content: 'Save/Load'
-                }
-            }),
-            about: new Group ({
-                class: 'ui segment group about-form',
-                parent: $(stageQuerySelector),
-                label: {
-                    content: 'About Your Character'
-                }
-            }),
             animation: new Group ({
                 parent: $(stageQuerySelector),
                 label: {
                     content: 'Animations'
+                }
+            }),
+            data: new Group ({
+                parent: $("#footer-bar"),
+                class: 'ui segment group data-area',
+                label: {
+                    content: 'Save/Load'
                 }
             }),
         }
@@ -57,13 +61,6 @@ export default class App {
         this.groups.data.addContent (this.exportButton.node);
         this.groups.data.addContent (this.importButton.node);
 
-        this.aboutForm = new AboutForm ({
-            parent: $(document.body),
-            keywords: keywords
-        })
-
-        this.groups.about.addContent (this.aboutForm.node);
-
         this.animationCategoriesNames = Object.keys (animationCategories);
 
         this.animationTabbers = {};
@@ -80,14 +77,15 @@ export default class App {
 
             this.CreateAnimationsTabberForCategory ({
                 categoryName: key,
-                category: item
+                category: item,
+                background,
             });
         }
 
         this.groups.animation.addContent (this.animationCategoryTabber.node);
     }
 
-    CreateAnimationsTabberForCategory ({ category, categoryName }) {
+    CreateAnimationsTabberForCategory ({ category, categoryName, background }) {
         var targetTabIndex = this.animationCategoryTabber.getTabIndexByName (categoryName);
 
         this.animationTabbers [categoryName] = new Tabber ({
@@ -103,11 +101,12 @@ export default class App {
         this.CreateAnimationFormsForCategory ({
             category,
             categoryName,
+            background,
             parentTabber: this.animationTabbers [categoryName]
         });
     }
 
-    CreateAnimationFormsForCategory ({ category, categoryName, parentTabber }) {
+    CreateAnimationFormsForCategory ({ category, categoryName, parentTabber, background }) {
         this.animationForms [categoryName] = {};
 
         var item;
@@ -118,10 +117,11 @@ export default class App {
                 {
                     parent: $(document.body),
                     categoryName,
+                    background,
                     name: key,
                     optional: item.optional,
                     frameCount: 5,
-                    frameDuration: 100,
+                    frameDuration: this.const.DEFAULT_FRAME_DURATION,
                     canvasHeight: this.const.CANVAS_HEIGHT,
                     canvasWidth: this.const.CANVAS_WIDTH,
                     scrollDir: item.scrollDir,
@@ -143,7 +143,6 @@ export default class App {
 
     CollectStateData () {
         var data = {};
-        data.about = this.aboutForm.GetState ();
         data.animationCategories = {};
 
         Object.keys (this.animationTabbers).forEach ((name) => {
@@ -165,7 +164,6 @@ export default class App {
         var json = JSON.parse (data.value);
 
         // about form
-        this.aboutForm.ImportData (json.about);
         Object.keys (json.animationCategories).forEach ((categoryName) => {
             Object.keys (json.animationCategories [categoryName]).forEach ((animationName) => {
                 console.log (this.animationForms)
@@ -177,7 +175,7 @@ export default class App {
 
     ExportData () {
         var data = this.CollectStateData();
-        var name = data.about.name + "-game-data.json"
+        var name = this.const.EXPORT_FILE_NAME;
         var jsonFileContent = JSON.stringify (data, null, 4);
         this.Download (jsonFileContent, name, "text/plain");
     }

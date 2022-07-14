@@ -9,7 +9,18 @@ import Label from './component/Label';
 import LabeledInput from './component/LabeledInput';
 
 export default class AnimationForm extends Html {
-    constructor ({ parent, frameCount, frameDuration, canvasHeight, canvasWidth, scrollDir, optional, name, categoryName }) {
+    constructor ({
+        parent,
+        frameCount,
+        frameDuration,
+        canvasHeight,
+        canvasWidth,
+        scrollDir,
+        optional,
+        name,
+        categoryName,
+        background,
+    }) {
         super ({ parent });
 
         this.state = {};
@@ -23,6 +34,7 @@ export default class AnimationForm extends Html {
         this.const = {};
         this.const.FRAME_DURATION_LABEL = 'Duration(ms)';
         this.const.IMG_SIZE = 256;
+        this.const.TIP_MULTIPLE_FRAME_UPLOAD = "You can upload multiple frames by shift clicking images. Frame count will be adjusted automatically."
 
         this.groups = {
             canvas: new Group ({
@@ -52,7 +64,8 @@ export default class AnimationForm extends Html {
             parent: this.node,
             height: canvasHeight, width: canvasWidth,
             imgSize: this.const.IMG_SIZE,
-            scrollDir: scrollDir
+            scrollDir: scrollDir,
+            background
         })
 
         this.groups.canvas.addContent (this.canvasManager.node);
@@ -92,6 +105,12 @@ export default class AnimationForm extends Html {
 
         this.imageLoader.node.prop ('multiple', 'multiple');
 
+        this.tipMultiUploadLabel = new Label({
+            parent: this.node,
+            class: "ui tip label",
+            content: this.const.TIP_MULTIPLE_FRAME_UPLOAD
+        })
+
         this.uploadFrameButton = new Button ({
             parent: this.node,
             label: 'Upload Frames',
@@ -115,6 +134,7 @@ export default class AnimationForm extends Html {
         this.groups.form.addContent (this.maxFrameCountInput.node);
         this.groups.form.addContent (this.frameSelector.node);
         this.groups.form.addContent (this.frameDurationInput.node);
+        this.groups.form.addContent (this.tipMultiUploadLabel.node);
         this.groups.form.addContent (this.uploadFrameButton.node);
         this.groups.form.addContent (this.playPauseButton.node);
     }

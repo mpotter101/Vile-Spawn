@@ -5,6 +5,9 @@ canvas {
     width: 40vw;
     display: block;
     margin: 0px auto;
+
+    max-height: 50vh;
+    max-width: 50vh;
 }
 
 #stage {
@@ -20,13 +23,25 @@ canvas {
 }
 
 .ui.segment.group.frame-form .input {
-    width: 40%
+    width: 40%;
+    margin-bottom: 1em;
 }
 
 .ui.segment.group.frame-form .button {
     display: block;
     width: 30%;
     margin: 1em auto;
+}
+
+.ui.segment.group.data-area {
+    display: inline-block;
+    width: 49%;
+    float: right;
+}
+.ui.segment.group.tips {
+    padding: 0.5em;
+    display: inline-block;
+    width: 49%;
 }
 
 .ui.tab > div.label {
@@ -74,5 +89,27 @@ canvas {
 
     .button {
         width: 40%;
+    }
+}
+
+.ui.tip.label {
+    display: block;
+
+    .content {
+        padding: 0;
+    }
+}
+
+.content {
+    text-align: center;
+}
+
+.canvas.preview, .frame-form {
+    display:inline-grid;
+}
+
+@media only screen and (max-width: 600px) {
+    .canvas.preview, .frame-form {
+        display:inline-block;
     }
 }

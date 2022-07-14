@@ -19,33 +19,30 @@
     </head>
 
     <body>
-        <div class="ui segments controls">
+        <div>
             <div class="ui basic segment" id="header-bar">
                 Vile Spawn: Make Some Monsters
             </div>
             <div class="ui basic segment body" id="body-bar">
-                <div class="ui segment group">
-                    <div>
-                        Tips:
-                    </div>
-                    <div>
-                        - All images should be 512x512.
-                    </div>
-                    <div>
-                        - Reducing the frame count of an animation will delete any frames beyond the new maximum.
-                    </div>
-                    <div>
-                        - You'll need to manually adjust the current frame when uploading images to add new frames to an animation.
-                    </div>
-                    <div>
-                        - Animations in with faded names are optional.
-                    </div>
-                </div>
                 <div id="app">
                     <div id="stage"></div>
                 </div>
             </div>
             <div class="ui basic segment" id="footer-bar">
+                <div class="ui segment group tips">
+                    <div>
+                        Tips:
+                    </div>
+                    <div>
+                        - All frames should have a 1:1 aspect ration. 256x256 recommended
+                    </div>
+                    <div>
+                        - Animations with faded names are optional.
+                    </div>
+                    <div>
+                        - When uploading multiple frames, if you set the frame duration first then all new frames will have that duration.
+                    </div>
+                </div>
             </div>
         </div>
     </body>

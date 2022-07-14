@@ -2,14 +2,15 @@ import Html from './component/Html';
 import Canvas from './component/Canvas';
 
 export default class CanvasManager extends Html {
-    constructor ({ parent, height, width, imgSize, scrollDir = '' }) {
+    constructor ({ parent, height, width, imgSize, background, scrollDir = '' }) {
         super ({parent});
         this.const = { HEIGHT: height, WIDTH: width };
         this.const.HALF_HEIGHT = height / 2;
         this.const.HALF_WIDTH = width / 2;
         this.const.IMG_SIZE = imgSize;
         this.const.HALF_IMG_SIZE = imgSize / 2;
-        this.const.FRAME_RATE = 1000 / 30;
+        this.const.FRAME_RATE = 1000 / 60;
+        this.const.SCROLL_SPEED = background.scrollSpeed;
 
         this.canvas = new Canvas ({
             parent: this.node,
@@ -22,12 +23,34 @@ export default class CanvasManager extends Html {
         this.state.frames = [];
         this.state.currentFrame = 0;
 
-        this.bgImg = $('<img src="./assets/Tiling Grass.png" />');
-        this.bgImg.on ('load', () => { this.ready = true; this.RedrawLoop() });
-        this.bgImgPos = { x: 0, y: 0 }
-        this.bgImgSpeed = 4;
         this.scrolling = true;
         this.scrollDir = scrollDir;
+        this.bgImg = $('<img src="./assets/Tiling Grid.png" />');
+        this.bgImg.on ('load', () => {
+            this.GetBgImageDimensions();
+        });
+    }
+
+    GetBgImageDimensions() {
+        this.bgImgWidth = this.bgImg [0].naturalWidth;
+        this.bgImgHeight = this.bgImg [0].naturalHeight;
+
+        if (this.bgImgHeight == 0 && this.bgImgWidth == 0) {
+            window.setTimeout(() => { this.GetBgImageDimensions(); }, 50)
+        }
+        else {
+            this.bgAspect = this.bgImgHeight / this.bgImgWidth;
+            this.bgImgPos = {
+                x: this.bgImgWidth / 4 + 35,
+                y: -this.bgImgHeight / 3 + this.const.HEIGHT
+            };
+            this.bgImgSpeed = {
+                x: this.const.SCROLL_SPEED,
+                y: this.const.SCROLL_SPEED * this.bgAspect
+            };
+            this.ready = true;
+            this.RedrawLoop();
+        }
     }
 
     SetImage ({ index, img, duration }) {
@@ -47,26 +70,26 @@ export default class CanvasManager extends Html {
 
     ScrollBg () {
         if (this.scrollDir.indexOf ('right') != -1) {
-            this.bgImgPos.x -= this.bgImgSpeed;
+            this.bgImgPos.x -= this.bgImgSpeed.x;
         }
 
         if (this.scrollDir.indexOf ('left') != -1) {
-            this.bgImgPos.x += this.bgImgSpeed;
+            this.bgImgPos.x += this.bgImgSpeed.x;
         }
 
         if (this.scrollDir.indexOf ('down') != -1) {
-            this.bgImgPos.y += this.bgImgSpeed;
+            this.bgImgPos.y += this.bgImgSpeed.y;
         }
 
         if (this.scrollDir.indexOf ('up') != -1) {
-            this.bgImgPos.y -= this.bgImgSpeed;
+            this.bgImgPos.y -= this.bgImgSpeed.y;
         }
 
-        if (this.bgImgPos.x <= -this.const.WIDTH || this.bgImgPos.x >= this.const.WIDTH) {
+        if (this.bgImgPos.x <= -this.bgImgWidth || this.bgImgPos.x >= this.bgImgWidth) {
             this.bgImgPos.x = 0;
         }
 
-        if (this.bgImgPos.y <= -this.const.HEIGHT || this.bgImgPos.y >= this.const.HEIGHT) {
+        if (this.bgImgPos.y <= -this.bgImgHeight || this.bgImgPos.y >= this.bgImgHeight) {
             this.bgImgPos.y = 0;
         }
     }
@@ -93,52 +116,63 @@ export default class CanvasManager extends Html {
             this.bgImgPos.x, this.bgImgPos.y
         )
 
+        // Helds remove grid lines between images
+        var alignmentBuffer = 1;
+
         // center right img
         this.ctx.drawImage (
             this.bgImg [0],
-            this.bgImgPos.x + this.const.WIDTH, this.bgImgPos.y
+            this.bgImgPos.x + this.bgImgWidth - alignmentBuffer,
+            this.bgImgPos.y
         )
 
         // center top img
         this.ctx.drawImage (
             this.bgImg [0],
-            this.bgImgPos.x, this.bgImgPos.y - this.const.HEIGHT
+            this.bgImgPos.x,
+            this.bgImgPos.y - this.bgImgHeight + alignmentBuffer
         )
 
         // top right img
         this.ctx.drawImage (
             this.bgImg [0],
-            this.bgImgPos.x + this.const.WIDTH, this.bgImgPos.y - this.const.HEIGHT
+            this.bgImgPos.x + this.bgImgWidth - alignmentBuffer,
+            this.bgImgPos.y - this.bgImgHeight + alignmentBuffer
         )
 
         // center left
         this.ctx.drawImage (
             this.bgImg [0],
-            this.bgImgPos.x - this.const.WIDTH, this.bgImgPos.y
+            this.bgImgPos.x - this.bgImgWidth + alignmentBuffer,
+            this.bgImgPos.y
         )
 
         // center bottom img
         this.ctx.drawImage (
             this.bgImg [0],
-            this.bgImgPos.x, this.bgImgPos.y + this.const.HEIGHT
+            this.bgImgPos.x,
+            this.bgImgPos.y + this.bgImgHeight - alignmentBuffer
         )
 
         // bottom left img
         this.ctx.drawImage (
             this.bgImg [0],
-            this.bgImgPos.x - this.const.WIDTH, this.bgImgPos.y + this.const.HEIGHT
+            this.bgImgPos.x - this.bgImgWidth + alignmentBuffer,
+            this.bgImgPos.y + this.bgImgHeight - alignmentBuffer
         )
 
         // top left img
         this.ctx.drawImage (
             this.bgImg [0],
-            this.bgImgPos.x - this.const.WIDTH, this.bgImgPos.y - this.const.HEIGHT
+            this.bgImgPos.x - this.bgImgWidth + alignmentBuffer,
+            this.bgImgPos.y - this.bgImgHeight + alignmentBuffer
         )
 
         // bottom right img
         this.ctx.drawImage (
             this.bgImg [0],
-            this.bgImgPos.x + this.const.WIDTH, this.bgImgPos.y + this.const.HEIGHT
+            this.bgImgPos.x + this.bgImgWidth - alignmentBuffer,
+            this.bgImgPos.y + this.bgImgHeight - alignmentBuffer
         )
     }
 
